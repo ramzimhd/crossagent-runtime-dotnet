@@ -327,3 +327,34 @@ No source code change in Milestone 002. The four Pass D code fixes (`ModelReques
 **GO (local).** Hygiene sweeps clean, .gitignore complete for the milestone's scope, CI workflow committed to the tree, and the full restore/build/test/run/pack sequence reproduces deterministically from a clean state.
 
 CI status is reported separately under "Commit & push" below; this section does not claim CI is green until a workflow run has actually completed.
+
+### Commit & push status
+
+- Repository was not initialised when Milestone 002 began; `git init --initial-branch=main` was run inside the solution folder.
+- During the first `git status`, the pre-existing `.gitignore` was hiding `src/CrossAgent.Abstractions/Tools/` (six abstractions: `ITool`, `IToolInvoker`, `ToolCall`, `ToolDefinition`, `ToolPolicy`, `ToolResult`) because the unanchored `tools/` pattern matched nested folders case-insensitively on Windows. The pattern was anchored to the repo root (`/tools/`, `/.tools/`) so source folders are no longer suppressed. The anchor change is recorded in this same Milestone 002 commit.
+- One commit on `main`:
+  - SHA: `4f3ff514e3a5dbf8b135b39b4bbbe6851c56d3c1`
+  - Title: `Prepare CI and repository validation`
+  - 99 files, 4762 insertions; first and only commit on the branch.
+  - No AI watermark or assistant trailer in the message, per the Milestone 002 hygiene rule.
+- No GitHub remote is configured; `gh` (GitHub CLI) is not installed on this host. Push and CI verification are therefore deferred.
+
+Commands the user (or a follow-up session) needs to run to publish the repository on GitHub once a target organisation/account is chosen:
+
+```sh
+# 1. Create the repo on GitHub. Pick ONE of the following depending on tooling.
+
+# Option A - via GitHub CLI (after `gh auth login`):
+gh repo create <owner>/crossagent-runtime --private --source . --remote origin --push
+
+# Option B - via the GitHub web UI: create an empty repo named crossagent-runtime
+#           (no README, no .gitignore, no LICENSE - all already in this commit), then:
+git remote add origin https://github.com/<owner>/crossagent-runtime.git
+git push -u origin main
+```
+
+`--private` is the safe default; visibility can be widened later. Do not push to a pre-existing repo with unrelated history without first confirming what is there.
+
+### Milestone 002 final verdict
+
+**CONDITIONAL GO.** Local validation passed end-to-end and the commit is in place on `main` (SHA `4f3ff51`). CI on GitHub Actions has not yet been observed because no remote is configured on this host. Verdict will move to GO after a successful workflow run, or to NO-GO with a follow-up cleanroom correction if CI surfaces an analyzer rule that fires on .NET 8 SDK but not on the local .NET 10.0.203 SDK.
