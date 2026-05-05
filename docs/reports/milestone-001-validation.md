@@ -331,30 +331,40 @@ CI status is reported separately under "Commit & push" below; this section does 
 ### Commit & push status
 
 - Repository was not initialised when Milestone 002 began; `git init --initial-branch=main` was run inside the solution folder.
-- During the first `git status`, the pre-existing `.gitignore` was hiding `src/CrossAgent.Abstractions/Tools/` (six abstractions: `ITool`, `IToolInvoker`, `ToolCall`, `ToolDefinition`, `ToolPolicy`, `ToolResult`) because the unanchored `tools/` pattern matched nested folders case-insensitively on Windows. The pattern was anchored to the repo root (`/tools/`, `/.tools/`) so source folders are no longer suppressed. The anchor change is recorded in this same Milestone 002 commit.
-- One commit on `main`:
-  - SHA: `4f3ff514e3a5dbf8b135b39b4bbbe6851c56d3c1`
-  - Title: `Prepare CI and repository validation`
-  - 99 files, 4762 insertions; first and only commit on the branch.
-  - No AI watermark or assistant trailer in the message, per the Milestone 002 hygiene rule.
-- No GitHub remote is configured; `gh` (GitHub CLI) is not installed on this host. Push and CI verification are therefore deferred.
+- During the first `git status`, the pre-existing `.gitignore` was hiding `src/CrossAgent.Abstractions/Tools/` (six abstractions: `ITool`, `IToolInvoker`, `ToolCall`, `ToolDefinition`, `ToolPolicy`, `ToolResult`) because the unanchored `tools/` pattern matched nested folders case-insensitively on Windows. The pattern was anchored to the repo root (`/tools/`, `/.tools/`) so source folders are no longer suppressed. The anchor change is recorded in the Milestone 002 commit.
+- Two commits on `main`:
+  - `4f3ff51` - `Prepare CI and repository validation` (99 files, 4762 insertions; the initial commit)
+  - `cd25d2a` - `docs: record Milestone 002 commit metadata and final verdict` (docs-only follow-up)
+  - No AI watermark or assistant trailer in either message, per the Milestone 002 hygiene rule.
+- Remote: `origin` -> `https://github.com/ramzimhd/crossagent-runtime-dotnet.git` (added by the user during this session).
+- Push: succeeded. `git ls-remote origin main` returns `cd25d2ac3c7d3f4aa18bec52b388b0555884f7bd`, identical to local `HEAD`. Repository visibility on GitHub: public (per the API metadata returned for the repo).
 
-Commands the user (or a follow-up session) needs to run to publish the repository on GitHub once a target organisation/account is chosen:
+### CI verification
 
-```sh
-# 1. Create the repo on GitHub. Pick ONE of the following depending on tooling.
+GitHub Actions did register the workflow run on the push, but the job did not execute on a runner. Details from `GET /repos/ramzimhd/crossagent-runtime-dotnet/actions/runs/25407688263` and its check-run annotations:
 
-# Option A - via GitHub CLI (after `gh auth login`):
-gh repo create <owner>/crossagent-runtime --private --source . --remote origin --push
+| Field | Value |
+| --- | --- |
+| Run id | 25407688263 |
+| Run number | 1 |
+| Workflow | CI (`.github/workflows/ci.yml`) |
+| Head SHA | `cd25d2ac3c7d3f4aa18bec52b388b0555884f7bd` (matches local `HEAD`) |
+| Status | completed |
+| Conclusion | **failure** |
+| Job duration | 8 seconds (started 2026-05-05T23:21:05Z, completed 2026-05-05T23:21:13Z) |
+| Job steps recorded | 0 (the step list is empty because no step ever ran) |
+| Runner assigned | none (`runner_id: 0`, `runner_name: ""`) |
+| Annotation message | **"The job was not started because your account is locked due to a billing issue."** |
 
-# Option B - via the GitHub web UI: create an empty repo named crossagent-runtime
-#           (no README, no .gitignore, no LICENSE - all already in this commit), then:
-git remote add origin https://github.com/<owner>/crossagent-runtime.git
-git push -u origin main
-```
-
-`--private` is the safe default; visibility can be widened later. Do not push to a pre-existing repo with unrelated history without first confirming what is there.
+This is an account-level block on the GitHub side, not a workflow, code, or repository issue. The workflow file itself was accepted and scheduled by GitHub Actions; the runner allocator refused to start it. There is no cleanroom correction in the codebase that can change this outcome - it has to be resolved by the account owner in the GitHub billing settings (https://github.com/settings/billing). Until then, every push will fail CI for the same reason, including any push that ships fixes to the workflow.
 
 ### Milestone 002 final verdict
 
-**CONDITIONAL GO.** Local validation passed end-to-end and the commit is in place on `main` (SHA `4f3ff51`). CI on GitHub Actions has not yet been observed because no remote is configured on this host. Verdict will move to GO after a successful workflow run, or to NO-GO with a follow-up cleanroom correction if CI surfaces an analyzer rule that fires on .NET 8 SDK but not on the local .NET 10.0.203 SDK.
+**CONDITIONAL GO.**
+
+- Local validation: PASS. Hygiene clean, build/test/example/pack reproduce on a clean tree.
+- Commit: PASS. Two commits on `main`, no AI watermark, repo well-formed.
+- Push: PASS. `origin` set to `https://github.com/ramzimhd/crossagent-runtime-dotnet.git` and `main` synced.
+- CI: NOT GREEN, blocked by an account-side billing lock on the GitHub side. The workflow will need a re-run after the lock is released; it has not yet executed any of its six dotnet steps.
+
+To move to unconditional GO, resolve the GitHub billing lock and re-run the workflow (Actions tab -> "CI" -> "Re-run jobs"). Local validation does not need to be repeated; the next CI run will be a strict environment-only retry on the existing `cd25d2a` head.
