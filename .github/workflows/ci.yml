@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  build:
+    name: Build, test and pack
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: SDK info
+        run: dotnet --info
+
+      - name: Restore
+        run: dotnet restore CrossAgent.sln
+
+      - name: Build (Release)
+        run: dotnet build CrossAgent.sln -c Release --no-restore
+
+      - name: Test (Release)
+        run: dotnet test CrossAgent.sln -c Release --no-build
+
+      - name: Run minimal example
+        run: dotnet run --project examples/CrossAgent.Examples.MinimalRuntime -c Release --no-build
+
+      - name: Pack (Release)
+        run: dotnet pack CrossAgent.sln -c Release --no-build -o ./artifacts/packages
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/packages/*.*nupkg
+          if-no-files-found: error

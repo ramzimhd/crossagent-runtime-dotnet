@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>CrossAgent.Core</PackageId>
+    <Title>CrossAgent.Core</Title>
+    <Description>The minimal CrossAgent Runtime: agent runtime host, session lifecycle, pattern selection, audit pipeline and the default policy engine. Depends only on CrossAgent.Abstractions.</Description>
+    <RootNamespace>CrossAgent.Core</RootNamespace>
+    <AssemblyName>CrossAgent.Core</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrossAgent.Abstractions\CrossAgent.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
