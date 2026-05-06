@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>CrossAgents.Testing</PackageId>
+    <Title>CrossAgents.Testing</Title>
+    <Description>Deterministic test doubles for CrossAgent Runtime: in-memory model adapter, memory provider, audit sink, fake tool, pattern test harness and a deterministic clock. No network calls, no provider credentials.</Description>
+    <RootNamespace>CrossAgents.Testing</RootNamespace>
+    <AssemblyName>CrossAgents.Testing</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrossAgents.Abstractions\CrossAgents.Abstractions.csproj" />
+    <ProjectReference Include="..\CrossAgents.Core\CrossAgents.Core.csproj" />
+  </ItemGroup>
+
+</Project>

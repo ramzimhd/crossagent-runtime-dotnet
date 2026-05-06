@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>CrossAgents.Memory</PackageId>
+    <Title>CrossAgents.Memory</Title>
+    <Description>Optional memory layer for the CrossAgent Runtime: retrieval, ranking, context compression and a sliding buffer. Memory stores themselves are pluggable and not owned by this package.</Description>
+    <RootNamespace>CrossAgents.Memory</RootNamespace>
+    <AssemblyName>CrossAgents.Memory</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrossAgents.Abstractions\CrossAgents.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

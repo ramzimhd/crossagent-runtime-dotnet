@@ -1,6 +1,6 @@
 # Architecture
 
-CrossAgent Runtime is structured around a small core that depends only on stable contracts. Every other concern - tooling, memory, patterns, test doubles - lives in its own assembly and is an optional dependency for an application.
+Cross Agents Runtime is structured around a small core that depends only on stable contracts. Every other concern - tooling, memory, patterns, test doubles - lives in its own assembly and is an optional dependency for an application.
 
 ## Layers
 
@@ -12,17 +12,17 @@ CrossAgent Runtime is structured around a small core that depends only on stable
 |    - registers IAgentPattern implementations              |
 |    - calls runtime.RunAsync(task, modelId)                |
 +-----------------------------------------------------------+
-|  CrossAgent.Patterns      CrossAgent.Tooling   .Memory    |
+|  CrossAgents.Patterns      CrossAgents.Tooling   .Memory    |
 |    - first-party patterns   - tool registry    - retrieval|
 |    - bounded by design      - validator        - ranker   |
 |                              - executor         - compress|
 +-----------------------------------------------------------+
-|  CrossAgent.Core                                          |
+|  CrossAgents.Core                                          |
 |    - AgentRuntime         - PatternSelector               |
 |    - AgentSession         - RuntimePolicyEngine           |
 |    - AuditPipeline        - PatternServices               |
 +-----------------------------------------------------------+
-|  CrossAgent.Abstractions  (stable contracts only)         |
+|  CrossAgents.Abstractions  (stable contracts only)         |
 |    - IModelAdapter, ModelProfile, ModelCapabilities       |
 |    - IAgentPattern, PatternDescriptor, AgentTask, ...     |
 |    - ITool, IToolInvoker, ToolDefinition, ToolPolicy      |
@@ -54,7 +54,7 @@ The selector orders patterns by score, then risk level, then pattern id. Given i
 - **Custom patterns** implement `IAgentPattern` and a `PatternDescriptor`. The descriptor is the contract the selector reasons about; the pattern itself only runs once selected.
 - **Custom policy engines** implement `IPolicyEngine` to enforce non-default rules. Applications that only need the built-in rules use `RuntimePolicyEngine`.
 - **Custom audit sinks** implement `IAuditSink`. Sinks should be safe under concurrent writers; the framework uses one pipeline per session, so contention is per-application.
-- **Custom tool invokers** implement `IToolInvoker`. The default is `ToolRegistry` from `CrossAgent.Tooling`.
+- **Custom tool invokers** implement `IToolInvoker`. The default is `ToolRegistry` from `CrossAgents.Tooling`.
 
 ## Concurrency model
 
