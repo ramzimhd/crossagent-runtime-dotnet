@@ -108,6 +108,16 @@ dotnet test CrossAgent.sln -c Release
 
 Tests run entirely in-process and require no credentials or network access.
 
+## Further reading
+
+- [docs/architecture.md](docs/architecture.md) - runtime composition.
+- [docs/pattern-selection.md](docs/pattern-selection.md) - selector contract.
+- [docs/custom-patterns.md](docs/custom-patterns.md) - implementing `IAgentPattern`.
+- [docs/tooling.md](docs/tooling.md) and [docs/memory.md](docs/memory.md) - optional middleware.
+- [docs/model-capabilities.md](docs/model-capabilities.md) - capability fields and selector inputs.
+- [docs/testing.md](docs/testing.md) - deterministic test doubles.
+- [docs/design-references.md](docs/design-references.md) - external agent frameworks studied for pattern shape (no code is copied; provider, channel, and domain features are intentionally out of scope).
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
