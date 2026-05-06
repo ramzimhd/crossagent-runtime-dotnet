@@ -4,9 +4,41 @@
 
 # Cross Agents Runtime (.NET)
 
+[![NuGet (Core)](https://img.shields.io/nuget/v/CrossAgents.Core?label=CrossAgents.Core&logo=nuget&color=004880)](https://www.nuget.org/packages/CrossAgents.Core)
+[![NuGet (Abstractions)](https://img.shields.io/nuget/v/CrossAgents.Abstractions?label=CrossAgents.Abstractions&logo=nuget&color=004880)](https://www.nuget.org/packages/CrossAgents.Abstractions)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Cross Agents Runtime is a provider-agnostic, model-adaptive agent runtime for building controlled mono-agent and multi-agent systems on .NET. It picks an execution pattern that fits a given task, model, policy, and operational constraints, then runs it inside an audited, bounded session.
 
 This repository contains the .NET implementation of the framework. Implementations in other ecosystems (Python, TypeScript) live in separate repositories so each can follow the conventions and release cadence of its own ecosystem.
+
+## Installation
+
+All packages are published to [nuget.org](https://www.nuget.org/profiles/CrossData) at version `0.1.0-preview.1`. The runtime targets `net10.0`.
+
+```sh
+# Minimum to run a session (Core brings Abstractions as a transitive dependency)
+dotnet add package CrossAgents.Core --version 0.1.0-preview.1
+dotnet add package CrossAgents.Patterns --version 0.1.0-preview.1
+
+# Optional middleware
+dotnet add package CrossAgents.Tooling --version 0.1.0-preview.1
+dotnet add package CrossAgents.Memory  --version 0.1.0-preview.1
+
+# Test-only deterministic fakes
+dotnet add package CrossAgents.Testing --version 0.1.0-preview.1
+```
+
+Or via `PackageReference` in your `.csproj`:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="CrossAgents.Core"     Version="0.1.0-preview.1" />
+  <PackageReference Include="CrossAgents.Patterns" Version="0.1.0-preview.1" />
+</ItemGroup>
+```
+
+> Preview packages require `--version` (or a `<PackageReference Version>`) explicitly until a stable `0.1.0` is published; `dotnet add package` without `--version` resolves to the latest stable release only.
 
 ## What it is
 
