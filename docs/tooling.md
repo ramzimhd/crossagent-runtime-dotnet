@@ -1,10 +1,10 @@
 # Tooling
 
-Tooling is optional. An application that doesn't need tools simply doesn't reference `CrossAgent.Tooling` and doesn't pass an `IToolInvoker` into `RuntimeOptions`. Patterns that don't require tools never see the layer.
+Tooling is optional. An application that doesn't need tools simply doesn't reference `CrossAgents.Tooling` and doesn't pass an `IToolInvoker` into `RuntimeOptions`. Patterns that don't require tools never see the layer.
 
 ## Layer responsibilities
 
-`CrossAgent.Tooling` provides:
+`CrossAgents.Tooling` provides:
 
 - **`ToolRegistry`** - the default `IToolInvoker`. It stores tools by name, normalises calls, validates arguments, and dispatches to the registered `ITool`.
 - **`ToolValidator`** - a lightweight JSON Schema check that enforces the canonical "object with required properties" shape. Applications that need richer validation can replace it with their own.

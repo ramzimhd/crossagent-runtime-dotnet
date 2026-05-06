@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>CrossAgents.Patterns</PackageId>
+    <Title>CrossAgents.Patterns</Title>
+    <Description>The first-party agent patterns for CrossAgent Runtime: NoToolPattern, PlanExecuteValidatePattern, JsonPlanPattern and BoundedReActPattern. Patterns are bounded by design and reject unsafe configurations.</Description>
+    <RootNamespace>CrossAgents.Patterns</RootNamespace>
+    <AssemblyName>CrossAgents.Patterns</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrossAgents.Abstractions\CrossAgents.Abstractions.csproj" />
+    <ProjectReference Include="..\CrossAgents.Core\CrossAgents.Core.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,16 +1,52 @@
-# CrossAgent Runtime (.NET)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ramzimhd/crossagent-runtime-dotnet/main/logo.png" alt="Cross Agents Runtime" width="160" />
+</p>
 
-CrossAgent Runtime is a provider-agnostic, model-adaptive agent runtime for building controlled mono-agent and multi-agent systems on .NET. It picks an execution pattern that fits a given task, model, policy, and operational constraints, then runs it inside an audited, bounded session.
+# Cross Agents Runtime (.NET)
+
+[![NuGet (Core)](https://img.shields.io/nuget/v/CrossAgents.Core?label=CrossAgents.Core&logo=nuget&color=004880)](https://www.nuget.org/packages/CrossAgents.Core)
+[![NuGet (Abstractions)](https://img.shields.io/nuget/v/CrossAgents.Abstractions?label=CrossAgents.Abstractions&logo=nuget&color=004880)](https://www.nuget.org/packages/CrossAgents.Abstractions)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Cross Agents Runtime is a provider-agnostic, model-adaptive agent runtime for building controlled mono-agent and multi-agent systems on .NET. It picks an execution pattern that fits a given task, model, policy, and operational constraints, then runs it inside an audited, bounded session.
 
 This repository contains the .NET implementation of the framework. Implementations in other ecosystems (Python, TypeScript) live in separate repositories so each can follow the conventions and release cadence of its own ecosystem.
 
+## Installation
+
+All packages are published to [nuget.org](https://www.nuget.org/profiles/CrossData) at version `0.1.0-preview.1`. The runtime targets `net10.0`.
+
+```sh
+# Minimum to run a session (Core brings Abstractions as a transitive dependency)
+dotnet add package CrossAgents.Core --version 0.1.0-preview.1
+dotnet add package CrossAgents.Patterns --version 0.1.0-preview.1
+
+# Optional middleware
+dotnet add package CrossAgents.Tooling --version 0.1.0-preview.1
+dotnet add package CrossAgents.Memory  --version 0.1.0-preview.1
+
+# Test-only deterministic fakes
+dotnet add package CrossAgents.Testing --version 0.1.0-preview.1
+```
+
+Or via `PackageReference` in your `.csproj`:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="CrossAgents.Core"     Version="0.1.0-preview.1" />
+  <PackageReference Include="CrossAgents.Patterns" Version="0.1.0-preview.1" />
+</ItemGroup>
+```
+
+> Preview packages require `--version` (or a `<PackageReference Version>`) explicitly until a stable `0.1.0` is published; `dotnet add package` without `--version` resolves to the latest stable release only.
+
 ## What it is
 
-- A small set of stable contracts (`CrossAgent.Abstractions`) that describe models, tools, memory, patterns, policy, and audit.
-- A minimal runtime host (`CrossAgent.Core`) that registers adapters and patterns, selects one for each task, runs it, and surfaces a structured result.
-- A first-party set of safe patterns (`CrossAgent.Patterns`): a no-tool single call, a Plan-Execute-Validate flow, a JSON plan skeleton, and a strictly bounded ReAct loop.
-- Optional layers for tooling (`CrossAgent.Tooling`) and memory (`CrossAgent.Memory`) that can be plugged in independently.
-- Deterministic test doubles (`CrossAgent.Testing`) for pattern and runtime tests with no external dependencies.
+- A small set of stable contracts (`CrossAgents.Abstractions`) that describe models, tools, memory, patterns, policy, and audit.
+- A minimal runtime host (`CrossAgents.Core`) that registers adapters and patterns, selects one for each task, runs it, and surfaces a structured result.
+- A first-party set of safe patterns (`CrossAgents.Patterns`): a no-tool single call, a Plan-Execute-Validate flow, a JSON plan skeleton, and a strictly bounded ReAct loop.
+- Optional layers for tooling (`CrossAgents.Tooling`) and memory (`CrossAgents.Memory`) that can be plugged in independently.
+- Deterministic test doubles (`CrossAgents.Testing`) for pattern and runtime tests with no external dependencies.
 
 ## What it isn't
 
@@ -32,11 +68,11 @@ This repository contains the .NET implementation of the framework. Implementatio
 ## Minimal example
 
 ```csharp
-using CrossAgent.Abstractions.Agents;
-using CrossAgent.Abstractions.Models;
-using CrossAgent.Core;
-using CrossAgent.Patterns;
-using CrossAgent.Testing;
+using CrossAgents.Abstractions.Agents;
+using CrossAgents.Abstractions.Models;
+using CrossAgents.Core;
+using CrossAgents.Patterns;
+using CrossAgents.Testing;
 
 var runtime = new AgentRuntime(new RuntimeOptions
 {
@@ -52,7 +88,7 @@ var profile = new ModelProfile
 };
 
 runtime
-    .RegisterModel(new FakeModelAdapter(profile, "Hello from CrossAgent Runtime."))
+    .RegisterModel(new FakeModelAdapter(profile, "Hello from Cross Agents Runtime."))
     .RegisterPattern(new NoToolPattern())
     .RegisterPattern(new PlanExecuteValidatePattern());
 
@@ -63,18 +99,18 @@ var result = await runtime.RunAsync(
 Console.WriteLine($"{result.SelectedPatternId}: {result.Agent?.Output}");
 ```
 
-A self-contained runnable version of this lives in `examples/CrossAgent.Examples.MinimalRuntime`.
+A self-contained runnable version of this lives in `examples/CrossAgents.Examples.MinimalRuntime`.
 
 ## Package layout
 
 | Package | Purpose | Depends on |
 | --- | --- | --- |
-| `CrossAgent.Abstractions` | Stable contracts (models, tools, memory, patterns, policy, audit) | – |
-| `CrossAgent.Core` | Runtime host, session, selector, default policy engine, audit pipeline | Abstractions |
-| `CrossAgent.Patterns` | First-party safe patterns | Abstractions, Core |
-| `CrossAgent.Tooling` | Optional tool registry, validator, executor, normalizer | Abstractions |
-| `CrossAgent.Memory` | Optional retrieval, ranking, compression, sliding buffer | Abstractions |
-| `CrossAgent.Testing` | Deterministic test doubles | Abstractions, Core |
+| `CrossAgents.Abstractions` | Stable contracts (models, tools, memory, patterns, policy, audit) | – |
+| `CrossAgents.Core` | Runtime host, session, selector, default policy engine, audit pipeline | Abstractions |
+| `CrossAgents.Patterns` | First-party safe patterns | Abstractions, Core |
+| `CrossAgents.Tooling` | Optional tool registry, validator, executor, normalizer | Abstractions |
+| `CrossAgents.Memory` | Optional retrieval, ranking, compression, sliding buffer | Abstractions |
+| `CrossAgents.Testing` | Deterministic test doubles | Abstractions, Core |
 
 ## Design principles
 
@@ -83,7 +119,7 @@ A self-contained runnable version of this lives in `examples/CrossAgent.Examples
 3. **Bounded by default**: every shipped pattern declares step counts and risk levels; the runtime rejects unbounded configurations.
 4. **Optional middleware**: tooling and memory are separate packages and separate runtime services; they can be omitted entirely.
 5. **Auditable**: every session emits a canonical sequence of audit events suitable for compliance and debugging.
-6. **Deterministic to test**: `CrossAgent.Testing` ships in-process fakes for every external dependency the framework defines.
+6. **Deterministic to test**: `CrossAgents.Testing` ships in-process fakes for every external dependency the framework defines.
 7. **Small public surface**: contracts are short, immutable, and documented; framework code never exposes provider-specific types.
 
 ## Current status
@@ -102,8 +138,8 @@ This is the first milestone. It establishes the contracts, the runtime, three pa
 ## Building and testing
 
 ```sh
-dotnet build CrossAgent.sln -c Release
-dotnet test CrossAgent.sln -c Release
+dotnet build CrossAgents.sln -c Release
+dotnet test CrossAgents.sln -c Release
 ```
 
 Tests run entirely in-process and require no credentials or network access.

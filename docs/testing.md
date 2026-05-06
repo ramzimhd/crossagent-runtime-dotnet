@@ -1,6 +1,6 @@
 # Testing
 
-`CrossAgent.Testing` ships deterministic test doubles for everything the framework defines.
+`CrossAgents.Testing` ships deterministic test doubles for everything the framework defines.
 
 ## Doubles
 
@@ -52,6 +52,6 @@ public async Task Runtime_PicksAndRunsAPattern()
 
 ## What the test layer does not do
 
-- It never reaches a network. Tests using only `CrossAgent.Testing` cannot accidentally hit a provider.
+- It never reaches a network. Tests using only `CrossAgents.Testing` cannot accidentally hit a provider.
 - It never reads credentials. The framework defines no credential surface.
 - It does not generate non-deterministic data. Identifiers are supplied by the application or constructed deterministically by the doubles.

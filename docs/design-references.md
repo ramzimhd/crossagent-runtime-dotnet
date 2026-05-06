@@ -1,6 +1,6 @@
 # Design references
 
-CrossAgent Runtime is the foundation library for an agentic architecture
+Cross Agents Runtime is the foundation library for an agentic architecture
 that gives developers a clean, provider-neutral runtime to build on. The
 .NET version is the first port; future ports (Python, TypeScript, others)
 will follow. To keep the **shape** of the runtime consistent across ports
@@ -16,12 +16,12 @@ copy-paste. Not for adopting their provider, channel, or domain features.
 Studying these references must not violate any milestone constraint:
 
 - No DocFlow, OCR, invoice, vector, database, or document-processing
-  logic enters CrossAgent.
+  logic enters CrossAgents.
 - No provider integration (OpenAI, Anthropic, OpenRouter, Mistral,
-  Ollama, Bedrock, Gemini, etc.) enters CrossAgent. Provider adapters
+  Ollama, Bedrock, Gemini, etc.) enters CrossAgents. Provider adapters
   are a separate concern, written by consumers of the runtime.
 - No messaging or channel adapter (Telegram, Discord, Slack, WhatsApp,
-  WebRTC, etc.) enters CrossAgent. Those belong above the runtime.
+  WebRTC, etc.) enters CrossAgents. Those belong above the runtime.
 - No secret, credential, or private config enters the repository.
 - No AI watermark, generation marker, or assistant trailer is added to
   source, comments, docs, commit messages, or workflow files.
@@ -35,7 +35,7 @@ Studying these references must not violate any milestone constraint:
 - Stack: Python (core agent), TypeScript (UI), MCP integration, cron
   scheduler, persistent memory, multi-LLM routing.
 
-Areas of pattern interest for CrossAgent:
+Areas of pattern interest for Cross Agents:
 
 | Pattern area | What to extract | What to leave behind |
 | --- | --- | --- |
@@ -52,7 +52,7 @@ Areas of pattern interest for CrossAgent:
 - Stack: TypeScript / Node.js, multi-channel gateway, sandboxed tool
   execution, voice and Canvas UI surfaces.
 
-Areas of pattern interest for CrossAgent:
+Areas of pattern interest for Cross Agents:
 
 | Pattern area | What to extract | What to leave behind |
 | --- | --- | --- |
@@ -62,16 +62,16 @@ Areas of pattern interest for CrossAgent:
 
 ## How to use these references
 
-When designing a runtime feature in CrossAgent (any language port):
+When designing a runtime feature in Cross Agents (any language port):
 
-1. State the feature in CrossAgent's own vocabulary first - what
+1. State the feature in Cross Agents's own vocabulary first - what
    abstraction it adds, what contract it changes, what audit events it
    emits. Do not borrow vocabulary from the references prematurely.
 2. Skim the corresponding area in the reference projects (via the
    knowledge endpoint or the GitHub repo) for shape, not implementation.
 3. Capture only the *shape*: interfaces, lifecycle, error handling,
    invariants. Not file layout, not import lists, not dependencies.
-4. Adapt the shape to CrossAgent's idioms. The .NET port follows .NET
+4. Adapt the shape to Cross Agents's idioms. The .NET port follows .NET
    conventions; future ports will follow theirs. The shared layer is
    the conceptual contract, not the code.
 5. If the pattern is worth standardising across ports, document it in
@@ -84,7 +84,7 @@ Add a project here only if all of the following hold:
 - It is open-source and can be referenced without licence friction.
 - It contains agent-runtime patterns at the correct level of abstraction
   (loop, tools, memory, audit, capability negotiation, scheduling).
-- It does not pull CrossAgent toward provider lock-in, domain coupling,
+- It does not pull Cross Agents toward provider lock-in, domain coupling,
   or feature creep.
 
 Keep the list short. The point of a reference is signal, not surface

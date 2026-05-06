@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>CrossAgents.Abstractions</PackageId>
+    <Title>CrossAgents.Abstractions</Title>
+    <Description>Provider-agnostic contracts for the CrossAgent Runtime: model adapters, agent patterns, tools, memory, policy and audit interfaces. Reference this package when defining adapters or extension points without taking a dependency on the core runtime.</Description>
+    <RootNamespace>CrossAgents.Abstractions</RootNamespace>
+    <AssemblyName>CrossAgents.Abstractions</AssemblyName>
+  </PropertyGroup>
+
+</Project>

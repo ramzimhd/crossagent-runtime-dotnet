@@ -1,6 +1,6 @@
 # Memory
 
-Memory is optional. The `CrossAgent.Memory` package contributes a small set of utilities that turn an `IMemoryProvider` into an `ActiveContext` patterns can consume; it does not own a database, vector index, or embedding model.
+Memory is optional. The `CrossAgents.Memory` package contributes a small set of utilities that turn an `IMemoryProvider` into an `ActiveContext` patterns can consume; it does not own a database, vector index, or embedding model.
 
 ## Components
 

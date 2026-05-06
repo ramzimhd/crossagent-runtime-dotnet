@@ -24,19 +24,19 @@ jobs:
         run: dotnet --info
 
       - name: Restore
-        run: dotnet restore CrossAgent.sln
+        run: dotnet restore CrossAgents.sln
 
       - name: Build (Release)
-        run: dotnet build CrossAgent.sln -c Release --no-restore
+        run: dotnet build CrossAgents.sln -c Release --no-restore
 
       - name: Test (Release)
-        run: dotnet test CrossAgent.sln -c Release --no-build
+        run: dotnet test CrossAgents.sln -c Release --no-build
 
       - name: Run minimal example
-        run: dotnet run --project examples/CrossAgent.Examples.MinimalRuntime -c Release --no-build
+        run: dotnet run --project examples/CrossAgents.Examples.MinimalRuntime -c Release --no-build
 
       - name: Pack (Release)
-        run: dotnet pack CrossAgent.sln -c Release --no-build -o ./artifacts/packages
+        run: dotnet pack CrossAgents.sln -c Release --no-build -o ./artifacts/packages
 
       - name: Upload package artifacts
         uses: actions/upload-artifact@v4

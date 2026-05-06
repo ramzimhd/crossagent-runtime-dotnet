@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CrossAgents.Examples.MinimalRuntime</RootNamespace>
+    <AssemblyName>CrossAgents.Examples.MinimalRuntime</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\CrossAgents.Abstractions\CrossAgents.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\CrossAgents.Core\CrossAgents.Core.csproj" />
+    <ProjectReference Include="..\..\src\CrossAgents.Patterns\CrossAgents.Patterns.csproj" />
+    <ProjectReference Include="..\..\src\CrossAgents.Testing\CrossAgents.Testing.csproj" />
+  </ItemGroup>
+
+</Project>

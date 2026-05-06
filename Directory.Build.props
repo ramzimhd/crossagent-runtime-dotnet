@@ -17,16 +17,17 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Repository">
-    <Authors>CrossAgent Runtime contributors</Authors>
-    <Company>CrossAgent Runtime</Company>
-    <Product>CrossAgent Runtime</Product>
-    <Copyright>Copyright (c) CrossAgent Runtime contributors</Copyright>
-    <PackageProjectUrl>https://github.com/crossagent/crossagent-runtime-dotnet</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/crossagent/crossagent-runtime-dotnet</RepositoryUrl>
+    <Authors>Cross Agents Runtime contributors</Authors>
+    <Company>Cross Agents Runtime</Company>
+    <Product>Cross Agents Runtime</Product>
+    <Copyright>Copyright (c) Cross Agents Runtime contributors</Copyright>
+    <PackageProjectUrl>https://github.com/ramzimhd/crossagent-runtime-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ramzimhd/crossagent-runtime-dotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>agent;agents;ai;llm;runtime;orchestration;multi-agent;framework</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>logo.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Label="Versioning">
@@ -40,6 +41,10 @@
 
   <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)README.md')">
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)logo.png')">
+    <None Include="$(MSBuildThisFileDirectory)logo.png" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 
 </Project>
