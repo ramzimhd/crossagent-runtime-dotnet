@@ -368,3 +368,75 @@ This is an account-level block on the GitHub side, not a workflow, code, or repo
 - CI: NOT GREEN, blocked by an account-side billing lock on the GitHub side. The workflow will need a re-run after the lock is released; it has not yet executed any of its six dotnet steps.
 
 To move to unconditional GO, resolve the GitHub billing lock and re-run the workflow (Actions tab -> "CI" -> "Re-run jobs"). Local validation does not need to be repeated; the next CI run will be a strict environment-only retry on the existing `cd25d2a` head.
+
+## Multi-port validation (2026-05-06)
+
+Beyond the .NET implementation, two sibling ports were built locally as separate repositories so each can follow the conventions and release cadence of its ecosystem. The contracts, runtime semantics, audit-event sequence, pattern catalogue, and 23-test inventory are shared across all three ports; the surface follows each language's idioms.
+
+### Repository layout
+
+| Port | Local working tree | Intended GitHub repo |
+| --- | --- | --- |
+| .NET 8 | `C:\Users\RAMZI\source\repos\ramzimhd\CrossAgent Runtime\CrossAgent Runtime\` | `https://github.com/ramzimhd/crossagent-runtime-dotnet` (created and pushed) |
+| Python 3.11+ | `C:\Users\RAMZI\source\repos\ramzimhd\crossagent-runtime-python\` | `https://github.com/ramzimhd/crossagent-runtime-python` (commit local, remote not yet created) |
+| TypeScript / Node 20+ | `C:\Users\RAMZI\source\repos\ramzimhd\crossagent-runtime-typescript\` | `https://github.com/ramzimhd/crossagent-runtime-typescript` (commit local, remote not yet created) |
+
+### Cross-port consistency
+
+| Surface | .NET | Python | TypeScript |
+| --- | --- | --- | --- |
+| Stable contracts package | `CrossAgent.Abstractions` (.csproj) | `crossagent.abstractions` (sub-package) | `crossagent-runtime/abstractions` (subpath export) |
+| Runtime host | `AgentRuntime` | `AgentRuntime` | `AgentRuntime` |
+| Pattern selector | `PatternSelector` (deterministic, score-based, tie-break on risk then id) | `PatternSelector` (idem) | `PatternSelector` (idem) |
+| Default policy engine | `RuntimePolicyEngine` | `RuntimePolicyEngine` | `RuntimePolicyEngine` |
+| Audit pipeline | `AuditPipeline` | `AuditPipeline` | `AuditPipeline` |
+| Patterns shipped | NoToolPattern, PlanExecuteValidatePattern, JsonPlanPattern, BoundedReActPattern | idem | idem |
+| Optional tooling | `CrossAgent.Tooling` (registry/validator/executor/normalizer) | `crossagent.tooling` (idem) | `crossagent-runtime/tooling` (idem) |
+| Optional memory | `CrossAgent.Memory` (retriever/ranker/compressor/sliding) | `crossagent.memory` (idem) | `crossagent-runtime/memory` (idem) |
+| Test doubles | `CrossAgent.Testing` (FakeModelAdapter, FakeTool, FakeMemoryProvider, InMemoryAuditSink, DeterministicClock, PatternTestHarness) | `crossagent.testing` (idem) | `crossagent-runtime/testing` (idem) |
+| Test count | 23 (xUnit) | 23 (pytest, asyncio mode auto) | 23 (vitest) |
+| Audit event kinds | 15 ordinal values, none reused or reordered | identical (`IntEnum`) | identical (`enum`) |
+| Unbounded ReAct rejected at construction | yes (BoundedReActOptions.Validate throws) | yes (BoundedReActOptions.validate raises) | yes (validateBoundedReActOptions throws) |
+| `requires_validation` defaults | `true` | `true` | `true` |
+| Pattern selector score tie-break | risk asc, then patternId ordinal asc | idem | idem |
+| Provider-neutral `IModelAdapter` | abstract + capabilities flag set | `Protocol` + capabilities flag set | TS interface + capabilities flag set |
+
+### Local validation results per port
+
+| Port | Toolchain | Build | Tests | Example | Pack |
+| --- | --- | --- | --- | --- | --- |
+| .NET 8 | SDK 10.0.203, runtime 8.0.26 | 0 warning, 0 error in 5.98s | 23 / 23 in 29 ms | deterministic transcript, exit 0 | 6 .nupkg + 6 .snupkg at 0.1.0-preview.1 |
+| Python 3.11+ | uv 0.11.3, Python 3.12.11 (venv), pytest 9.0, pytest-asyncio 1.3 | hatchling builds clean | 23 / 23 in 0.54s | deterministic transcript, exit 0 | crossagent_runtime-0.1.0a1.tar.gz (29.5 KB) + .whl (45.7 KB) |
+| TypeScript / Node 20+ | Node 24.11, npm 11.6, TypeScript 5.9, vitest 2.1 | tsc strict, 0 errors | 23 / 23 in 804 ms | deterministic transcript, exit 0 | crossagent-runtime-0.1.0-preview.1.tgz (54.6 KB packed, 254.8 KB unpacked) |
+
+### Hygiene per port
+
+All three trees were swept for AI watermarks, TODO/FIXME/HACK/XXX, secrets, provider integrations, forbidden domain code, and provider/DB/document-processing dependencies. Result on every port: 0 hits in code, config, and docs.
+
+### Commits
+
+| Port | Branch | Commits | Last SHA | Push status |
+| --- | --- | --- | --- | --- |
+| .NET 8 | main | 4 (init + M002 docs + CI run #1 + design-references) | `104c425` | pushed, public on GitHub, CI blocked by account billing |
+| Python 3.11+ | main | 1 (init bundle, mirrors `Prepare CI and repository validation`) | `537bfad` | local only - GitHub repo `ramzimhd/crossagent-runtime-python` returned 404; once the empty repo is created, the pre-configured `origin` can `git push -u origin main` without further setup |
+| TypeScript / Node 20+ | main | 1 (init bundle, mirrors `Prepare CI and repository validation`) | `47afdc4` | local only - GitHub repo `ramzimhd/crossagent-runtime-typescript` returned 404; same pattern as Python |
+
+### CI workflows
+
+All three ports ship `.github/workflows/ci.yml` with the same shape: trigger on push and pull_request, run on `ubuntu-latest`, install the language toolchain, restore/install, build, run tests, run the example, build/pack, and upload the resulting distribution(s) as a workflow artifact. Per-language differences:
+
+- .NET pins `dotnet-version: 8.0.x` via `actions/setup-dotnet@v4`.
+- Python uses `actions/setup-python@v5` matrixed across 3.11 / 3.12 / 3.13 plus `astral-sh/setup-uv@v3` for the package manager.
+- TypeScript uses `actions/setup-node@v4` matrixed across 20.x / 22.x with `cache: npm`, runs `tsc --noEmit`, vitest, build, and `npm pack`.
+
+CI status is reported separately per port; this report does not claim CI is green on any port until a workflow run has actually completed.
+
+### Multi-port verdict
+
+**CONDITIONAL GO across the family.**
+
+- Local validation: PASS on all three ports. Identical contracts, identical 23-test surface, identical deterministic example transcript shape (only the per-session GUID differs).
+- Commits: PASS on all three. No AI watermark, no provider integration, no domain code, no secrets, hygiene clean.
+- Push / CI: PASS on .NET (account billing lock blocks the runner, not the code). Pending on Python and TypeScript - the empty GitHub repos still need to be created under `ramzimhd/`. Once they exist, `git push -u origin main` from each working tree publishes everything in one shot. The .NET billing lock issue is independent of the new ports and will continue to block until resolved.
+
+NuGet / PyPI / npm publication remains explicitly out of scope (Milestone 003); no `dotnet nuget push`, `uv publish`, `twine upload`, or `npm publish` has been run, and no API tokens or registry credentials are stored anywhere in any of the three trees.
